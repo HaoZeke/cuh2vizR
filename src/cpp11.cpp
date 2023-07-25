@@ -6,17 +6,16 @@
 #include <R_ext/Visibility.h>
 
 // code.cpp
-void fun();
-extern "C" SEXP _cuh2vizR_fun() {
+writable::list cuh2pot_list(writable::data_frame df);
+extern "C" SEXP _cuh2vizR_cuh2pot_list(SEXP df) {
   BEGIN_CPP11
-    fun();
-    return R_NilValue;
+    return cpp11::as_sexp(cuh2pot_list(cpp11::as_cpp<cpp11::decay_t<writable::data_frame>>(df)));
   END_CPP11
 }
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_cuh2vizR_fun", (DL_FUNC) &_cuh2vizR_fun, 0},
+    {"_cuh2vizR_cuh2pot_list", (DL_FUNC) &_cuh2vizR_cuh2pot_list, 1},
     {NULL, NULL, 0}
 };
 }
