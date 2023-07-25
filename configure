@@ -1,0 +1,9 @@
+meson setup bbdir --prefix ${CONDA_PREFIX}
+meson compile -C bbdir
+
+cp -f "bbdir/Makevars" "src/Makevars"
+
+# Emacs Stuff (cross platform)
+# Local Variables:
+# mode: shell-script
+# End:
