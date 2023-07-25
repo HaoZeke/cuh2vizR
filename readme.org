@@ -1,0 +1,6 @@
+* About
+This is a simple enough repository containing some ~C++~ code and wrappers to
+manipulate systems of copper and hydrogen. The focus is on generating data from
+~con~ files which can then be visualized in ~R~.
+* License
+MIT.
