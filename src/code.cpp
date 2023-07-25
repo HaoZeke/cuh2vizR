@@ -1,28 +1,32 @@
 #include "../subprojects/potlib/CppCore/src/CuH2/CuH2Pot.hpp"
 #include "../subprojects/potlib/CppCore/src/base_types.hpp"
 #include "../subprojects/potlib/CppCore/src/pot_types.hpp"
+#include "../subprojects/readCon/CppCore/include/BaseTypes.hpp"
+#include "../subprojects/readCon/CppCore/include/ReadCon.hpp"
+#include "../subprojects/readCon/CppCore/include/helpers/StringHelpers.hpp"
 #include "cpp11.hpp"
 using namespace cpp11::literals;
 using namespace cpp11;
+using namespace yodecon::types;
 
-[[cpp11::register]] writable::list cuh2pot_list(writable::data_frame df) {
-  // Extract data from dataframe
-  std::vector<double> x = cpp11::as_cpp<std::vector<double>>(df["x"]);
-  std::vector<double> y = cpp11::as_cpp<std::vector<double>>(df["y"]);
-  std::vector<double> z = cpp11::as_cpp<std::vector<double>>(df["z"]);
+typedef Eigen::Matrix<unsigned long, Eigen::Dynamic, 1> VectorXul;
 
-  cpp11::doubles atmNum = df["atmNum"];
-  Eigen::VectorXi atmtypes(atmNum.size());
-  std::copy(atmNum.begin(), atmNum.end(), atmtypes.data());
+[[cpp11::register]] writable::list cuh2pot_single_con(std::string fname) {
+  std::vector<std::string> fconts =
+      yodecon::helpers::file::read_con_file(fname);
+  auto singleCon = yodecon::create_single_con<ConFrameVec>(fconts);
 
   // Populate atom positions matrix
-  std::vector<double> coords;
-  coords.reserve(3 * x.size());
-  for (size_t i = 0; i < x.size(); ++i) {
-    coords.insert(coords.end(), {x[i], y[i], z[i]});
-  }
-  rgpot::AtomMatrix positions =
-      Eigen::Map<rgpot::AtomMatrix>(coords.data(), x.size(), 3);
+  // Convert std::vectors to Eigen::VectorXd
+  const size_t framesize = singleCon.x.size();
+  Eigen::VectorXd xVec = Eigen::Map<Eigen::VectorXd>(singleCon.x.data(), framesize);
+  Eigen::VectorXd yVec = Eigen::Map<Eigen::VectorXd>(singleCon.y.data(), framesize);
+  Eigen::VectorXd zVec = Eigen::Map<Eigen::VectorXd>(singleCon.z.data(), framesize);
+  auto atmtypes = Eigen::Map<VectorXul>(( yodecon::symbols_to_atomic_numbers(singleCon.symbol) ).data(), framesize);
+
+  // Stack them into a matrix
+  rgpot::AtomMatrix positions(singleCon.x.size(), 3);
+  positions << xVec, yVec, zVec;
 
   // Define box (assuming it's constant for now)
   Eigen::Matrix3d box{{15.345599999999999, 0, 0},
@@ -31,7 +35,7 @@ using namespace cpp11;
 
   // Compute the energy and forces
   auto cuh2pot = rgpot::CuH2Pot();
-  auto [energy, forces] = cuh2pot(positions, atmtypes, box);
+  auto [energy, forces] = cuh2pot(positions, atmtypes.cast<int>(), box);
 
   // Prepare forces output matrix
   cpp11::writable::doubles_matrix<cpp11::by_row> forces_matrix(forces.rows(),
