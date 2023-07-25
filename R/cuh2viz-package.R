@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @useDynLib cuh2viz, .registration = TRUE
+#' @useDynLib cuh2vizR, .registration = TRUE
 ## usethis namespace: end
 #' @export fun
 NULL

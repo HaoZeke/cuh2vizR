@@ -1,9 +1,9 @@
 # To use:
 #
 #   $ micromamba create -f environment.yml  # `micromamba` works too for this command
-#   $ micromamba activate cuh2viz_dev
+#   $ micromamba activate cuh2vizR_dev
 #
-name: cuh2viz_dev
+name: cuh2vizR_dev
 channels:
   - conda-forge
 dependencies:

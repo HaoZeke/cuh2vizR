@@ -7,7 +7,7 @@
 
 // code.cpp
 void fun();
-extern "C" SEXP _cuh2viz_fun() {
+extern "C" SEXP _cuh2vizR_fun() {
   BEGIN_CPP11
     fun();
     return R_NilValue;
@@ -16,12 +16,12 @@ extern "C" SEXP _cuh2viz_fun() {
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_cuh2viz_fun", (DL_FUNC) &_cuh2viz_fun, 0},
+    {"_cuh2vizR_fun", (DL_FUNC) &_cuh2vizR_fun, 0},
     {NULL, NULL, 0}
 };
 }
 
-extern "C" attribute_visible void R_init_cuh2viz(DllInfo* dll){
+extern "C" attribute_visible void R_init_cuh2vizR(DllInfo* dll){
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);

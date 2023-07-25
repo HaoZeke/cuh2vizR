@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(cuh2viz)
+library(cuh2vizR)
 
-test_check("cuh2viz")
+test_check("cuh2vizR")
