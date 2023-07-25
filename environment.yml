@@ -22,7 +22,6 @@ dependencies:
   - r-devtools
   - r-roxygen2
   - r-cpp11
-  - r-decor
   # (test)
   - r-testthat
   # (lint)
