@@ -3,17 +3,40 @@ This is a simple enough repository containing some ~C++~ code and wrappers to
 manipulate systems of copper and hydrogen. The focus is on generating data from
 ~con~ files which can then be visualized in ~R~.
 ** Usage
-This depends rather heavily on the environment defined for now, and it requires
-a pretty manual build process:
+At the moment, the easiest / most robust way to use this is with the bundled
+environment.
 #+begin_src bash
 micromamba create -f environment.yml
 micromamba activate cuh2vizR_dev
-Rscript -e 'library(devtools); devtools::clean_dll(); cpp11::cpp_register(); devtools::document(); devtools::load_all()'
+#+end_src
+*** Prerequisites
+We need the ~readConR~ package, so:
+#+begin_src bash
+Rscript - 'remotes::install_github("HaoZeke/readconR")'
+#+end_src
+*** Installation
+We can use the following for ensuring everything goes well:
+#+begin_src bash
+Rscript -e 'library(devtools); devtools::clean_dll(); cpp11::cpp_register(); devtools::document(); devtools::install()'
 #+end_src
 * Developing
+** Reload
+#+begin_src R
+devtools::clean_dll()
+cpp11::cpp_register()
+devtools::document()
+devtools::load_all()
+#+end_src
 ** Exports
-Rather confusingly (by [[https://github.com/r-lib/cpp11/issues/233][design apparently]]) and unlike ~Rcpp~[fn:whynot], functions are not automatically
-exported. They will need an entry in the ~R/pkgname-package.R~ file.
+Rather confusingly (by [[https://github.com/r-lib/cpp11/issues/233][design apparently]]) and unlike ~Rcpp~[fn:whynot],
+functions are not automatically exported. They will need an entry in the
+~R/pkgname-package.R~ file.
+** Linting
+~pre-commit~ has trouble locally with ~R~ hoooks so:
+#+begin_src bash
+Rscript -e 'library(styler); style_dir(".")'
+Rscript -e 'library(lintr); lint_package()'
+#+end_src
 * License
 MIT.
 
