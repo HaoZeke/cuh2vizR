@@ -17,3 +17,15 @@ dependencies:
   - fmt==9.1.0
   # Tests
   - gtest
+  # R bindings
+  # (core)
+  - r-devtools
+  - r-roxygen2
+  - r-cpp11
+  # (test)
+  - r-testthat
+  # (lint)
+  - r-styler
+  - r-lintr
+  # Interactivity
+  - radian
