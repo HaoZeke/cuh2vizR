@@ -12,7 +12,8 @@ micromamba activate cuh2vizR_dev
 *** Prerequisites
 We need the ~readConR~ package, so:
 #+begin_src bash
-Rscript - 'remotes::install_github("HaoZeke/readconR")'
+Rscript -e 'remotes::install_github("HaoZeke/readconR")'
+Rscript -e 'remotes::install_github("TheochemUI/potlibR")'
 #+end_src
 *** Installation
 We can use the following for ensuring everything goes well:
