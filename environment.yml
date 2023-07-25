@@ -17,6 +17,14 @@ dependencies:
   - fmt==9.1.0
   # Tests
   - gtest
+  # Potlib dep
+  - openblas
+  - gfortran
+  # (pinned)
+  - eigen==3.4.0
+  # (libs)
+  - fmt
+  - spdlog
   # R bindings
   # (core)
   - r-devtools

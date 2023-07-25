@@ -1,5 +1,6 @@
-meson setup bbdir --prefix ${CONDA_PREFIX}
-meson compile -C bbdir
+export R_ROOT=$(Rscript -e 'R.home()' | sed -e 's/^\[1\] "//' -e 's/"$//')
+meson setup bbdir --prefix ${R_ROOT} --wipe
+meson install -C bbdir
 
 cp -f "bbdir/Makevars" "src/Makevars"
 

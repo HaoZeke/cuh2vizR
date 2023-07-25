@@ -25,6 +25,14 @@ pkg_config.set('MESON_BDIR', join_paths(meson.current_build_dir(),
 pkg_config.set('INC_PATH', join_paths(meson.current_source_dir(),
                                      'subprojects', 'potlib',
                                      'CppCore'))
+# Get installation directory
+pkg_config.set('SUBLIBS', join_paths(meson.global_source_root(),
+                                     'bbdir'))
+# Get Eigen dep
+eigen_cmd = run_command('pkg-config', '--cflags', 'eigen3')
+eigen_dir = eigen_cmd.stdout().strip()
+message(eigen_dir)
+pkg_config.set('EIGEN_INC', eigen_dir)
 # Generate Makevars from the template
 configure_file(input : 'src/Makevars.in',
                output : 'Makevars',
