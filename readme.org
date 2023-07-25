@@ -3,8 +3,11 @@ This is a simple enough repository containing some ~C++~ code and wrappers to
 manipulate systems of copper and hydrogen. The focus is on generating data from
 ~con~ files which can then be visualized in ~R~.
 ** Usage
-For now, it requires a pretty manual build process:
+This depends rather heavily on the environment defined for now, and it requires
+a pretty manual build process:
 #+begin_src bash
+micromamba create -f environment.yml
+micromamba activate cuh2vizR_dev
 Rscript -e 'library(devtools); devtools::clean_dll(); cpp11::cpp_register(); devtools::document(); devtools::load_all()'
 #+end_src
 * Developing
