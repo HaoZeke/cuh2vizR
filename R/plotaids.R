@@ -13,10 +13,10 @@
 #' \dontrun{
 #' cuh2vizR_get_energy_contours(df, clip_max = 5, clip_min = 0)
 #' }
-cuh2vizR_get_energy_contours <- function(df, clip_max = 5, clip_min = 0) {
+cuh2vizR_get_energy_contours <- function(a_df, clip_max = 5, clip_min = 0) {
   library("ggplot2")
   library("dplyr")
-  df %>%
+  a_df %>%
     mutate(energy = replace(energy, energy > clip_max, clip_max)) %>%
     mutate(energy = replace(energy, energy < clip_min, clip_min)) %>%
     ggplot(aes(x = hh_dist, y = hcu_dist, z = energy)) +
@@ -24,5 +24,5 @@ cuh2vizR_get_energy_contours <- function(df, clip_max = 5, clip_min = 0) {
     geom_raster(interpolate = T, aes(fill = energy)) +
     geom_contour(color = "white") +
     scale_fill_gradientn(colors = hcl.colors(10, palette = "Blue-Red")) +
-    labs(x = "H-H distance", y = "Cu-H2 distance")
+    labs(x = "H-H distance", y = "Cu-H2 distance", title = "CuH2 Potential Energy (True)")
 }

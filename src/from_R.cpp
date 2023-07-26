@@ -23,9 +23,8 @@ cuh2pot_df(const cpp11::data_frame &df) {
   // Compute the energy
   auto cuh2pot = rgpot::CuH2Pot();
   auto [energy, forces] =
-    cuh2pot(positions, atmNumVec, cuh2vizR::constants::DEFAULT_BOX);
+      cuh2pot(positions, atmNumVec, cuh2vizR::constants::DEFAULT_BOX);
   energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
-
 
   // Calculate distances
   auto [hDistance, minCuDistance] =
