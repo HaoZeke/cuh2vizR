@@ -23,7 +23,6 @@ cuh2vizR_get_energy_contours <- function(df, clip_max = 5, clip_min = 0) {
     ## Can also be geom_tile()
     geom_raster(interpolate = T, aes(fill = energy)) +
     geom_contour(color = "white") +
-    scale_fill_gradientn(colors = hcl.colors(10, palette = "Blue-Red"),
-                         breaks = seq(clip_min, clip_max, by = 50)) +
+    scale_fill_gradientn(colors = hcl.colors(10, palette = "Blue-Red")) +
     labs(x = "H-H distance", y = "Cu-H2 distance")
 }

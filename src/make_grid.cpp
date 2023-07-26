@@ -17,13 +17,14 @@ void peturb_positions(rgpot::AtomMatrix &positions, Eigen::VectorXi &atmNumVec,
     throw std::runtime_error("Expected exactly two hydrogen atoms");
   }
 
-  std::cout << "H Coords before: " << positions.row(hIndices[0]) << " "
-            << positions.row(hIndices[1]) << std::endl;
+  // std::cout << "H Coords before: " << positions.row(hIndices[0]) << " "
+  // << positions.row(hIndices[1]) << std::endl;
 
   // Compute the midpoint of the hydrogens
   Eigen::VectorXd hMidpoint =
       (positions.row(hIndices[0]) + positions.row(hIndices[1])) / 2;
-  std::cout << "Midpoint of hydrogens: " << hMidpoint.transpose() << std::endl;
+  // std::cout << "Midpoint of hydrogens: " << hMidpoint.transpose() <<
+  // std::endl;
 
   // Compute the HH direction
   Eigen::VectorXd hh_direction;
@@ -34,16 +35,17 @@ void peturb_positions(rgpot::AtomMatrix &positions, Eigen::VectorXi &atmNumVec,
     hh_direction =
         (positions.row(hIndices[0]) - positions.row(hIndices[1])).normalized();
   }
-  std::cout << "HH direction: " << hh_direction.transpose() << std::endl;
+  // std::cout << "HH direction: " << hh_direction.transpose() << std::endl;
 
-  std::cout << "HH distance: " << hh_dist << std::endl;
+  // std::cout << "HH distance: " << hh_dist << std::endl;
   // Set the new position of the hydrogens
   positions.row(hIndices[0]) = hMidpoint - (0.5 * hh_dist) * hh_direction;
   positions.row(hIndices[1]) = hMidpoint + (0.5 * hh_dist) * hh_direction;
 
-  std::cout << "H Coords after changing HH distance: "
-            << positions.row(hIndices[0]) << " " << positions.row(hIndices[1])
-            << std::endl;
+  // std::cout << "H Coords after changing HH distance: "
+  //           << positions.row(hIndices[0]) << " " <<
+  //           positions.row(hIndices[1])
+  //           << std::endl;
 
   // Find the z-coordinate of the topmost Cu layer
   double maxCuZ = std::numeric_limits<double>::lowest();
@@ -58,14 +60,14 @@ void peturb_positions(rgpot::AtomMatrix &positions, Eigen::VectorXi &atmNumVec,
   for (int hIndex : hIndices) {
     positions(hIndex, 2) = new_z;
   }
+  // std::cout << "maxCuZ: " << maxCuZ << std::endl;
+  // std::cout << "hcu_dist: " << hcu_dist << std::endl;
+  // std::cout << "new_z: " << new_z << std::endl;
 
-  std::cout << "maxCuZ: " << maxCuZ << std::endl;
-  std::cout << "hcu_dist: " << hcu_dist << std::endl;
-  std::cout << "new_z: " << new_z << std::endl;
-
-  std::cout << "H Coords after moving towards the slab: "
-            << positions.row(hIndices[0]) << " " << positions.row(hIndices[1])
-            << std::endl;
+  // std::cout << "H Coords after moving towards the slab: "
+  //           << positions.row(hIndices[0]) << " " <<
+  //           positions.row(hIndices[1])
+  //           << std::endl;
 }
 
 [[cpp11::register]] double get_energy(const cpp11::data_frame &ref_df,
@@ -96,7 +98,7 @@ void peturb_positions(rgpot::AtomMatrix &positions, Eigen::VectorXi &atmNumVec,
 
   auto [energy, forces] =
       cuh2pot(positions, atmNumVec, cuh2vizR::constants::DEFAULT_BOX);
-      energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
+  energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
 
   return energy;
 }
