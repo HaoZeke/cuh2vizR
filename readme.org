@@ -1,7 +1,11 @@
 * About
 This is a simple enough repository containing some ~C++~ code and wrappers to
 manipulate systems of copper and hydrogen. The focus is on generating data from
-~con~ files which can then be visualized in ~R~.
+~con~ files which can then be visualized in ~R~. By relying on ~readCon~, we can
+return dataframes from files without an intermediate stage in ~R~.
+** Assumptions
+- We return "free atom" forces only, that is we explicitly zero out the forces
+  of atoms which are marked as unmoving in the ~con~ file
 ** Usage
 At the moment, the easiest / most robust way to use this is with the bundled
 environment.

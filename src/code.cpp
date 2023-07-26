@@ -40,10 +40,16 @@ typedef Eigen::Matrix<unsigned long, Eigen::Dynamic, 1> VectorXul;
   // Prepare forces output matrix
   cpp11::writable::doubles_matrix<cpp11::by_row> forces_matrix(forces.rows(),
                                                                3);
-  for (int i = 0; i < forces.rows(); ++i) {
-    forces_matrix(i, 0) = forces(i, 0);
-    forces_matrix(i, 1) = forces(i, 1);
-    forces_matrix(i, 2) = forces(i, 2);
+  for (size_t idx {0}; idx < forces.rows(); ++idx) {
+    if (!singleCon.is_fixed[idx]){
+      forces_matrix(idx, 0) = forces(idx, 0);
+      forces_matrix(idx, 1) = forces(idx, 1);
+      forces_matrix(idx, 2) = forces(idx, 2);
+    } else {
+      forces_matrix(idx, 0) = 0;
+      forces_matrix(idx, 1) = 0;
+      forces_matrix(idx, 2) = 0;
+    }
   }
 
   // Return a named List with the energy and forces Matrix
