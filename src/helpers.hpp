@@ -8,12 +8,16 @@
 
 using namespace yodecon::types;
 
-namespace cuh2vizR::helpers {
-// Define box (assuming it's constant for now)
+namespace cuh2vizR {
+namespace constants {
 const Eigen::Matrix3d DEFAULT_BOX{{15.345599999999999, 0, 0},
                                   {0, 21.702000000000002, 0},
                                   {0, 0, 100.00000000000000}};
-
+const double CUH2_GLOBAL_MIN{-697.311695}; // 0 of the CuH2 system
+} // namespace constants
+namespace helpers {
+// Define box (assuming it's constant for now)
 std::pair<double, double> calculateDistances(rgpot::AtomMatrix &positions,
                                              Eigen::VectorXi &atmtypes);
-}
+} // namespace helpers
+} // namespace cuh2vizR

@@ -23,7 +23,8 @@ cuh2pot_df(const cpp11::data_frame &df) {
   // Compute the energy
   auto cuh2pot = rgpot::CuH2Pot();
   auto [energy, forces] =
-      cuh2pot(positions, atmNumVec, cuh2vizR::helpers::DEFAULT_BOX);
+      cuh2pot(positions, atmNumVec, cuh2vizR::constants::DEFAULT_BOX);
+  energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
 
   // Calculate distances
   auto [hDistance, minCuDistance] =
@@ -55,8 +56,7 @@ cuh2_pdat_df(const cpp11::list &dfList) {
     // Add the results to the vectors
     energyVector.push_back(cpp11::as_cpp<double>(ef_dat["energy"]));
     hh_distVector.push_back(cpp11::as_cpp<double>(ef_dat["hDistance"]));
-    hcu_distVector.push_back(
-        cpp11::as_cpp<double>(ef_dat["minCuDistance"]));
+    hcu_distVector.push_back(cpp11::as_cpp<double>(ef_dat["minCuDistance"]));
   }
 
   using namespace cpp11::literals;
