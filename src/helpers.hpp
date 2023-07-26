@@ -5,8 +5,7 @@
 #include "../subprojects/readCon/CppCore/include/ReadCon.hpp"
 #include "../subprojects/readCon/CppCore/include/helpers/StringHelpers.hpp"
 #include "cpp11.hpp"
-using namespace cpp11::literals;
-using namespace cpp11;
+
 using namespace yodecon::types;
 
 namespace cuh2vizR::helpers {

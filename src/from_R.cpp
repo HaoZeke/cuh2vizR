@@ -30,6 +30,7 @@ cuh2pot_df(const cpp11::data_frame &df) {
       cuh2vizR::helpers::calculateDistances(positions, atmNumVec);
 
   // Return a named List with the energy, hDistance and minCuDistance
+  using namespace cpp11::literals;
   cpp11::writable::list result;
   result.push_back("energy"_nm = cpp11::writable::doubles({energy}));
   result.push_back("hDistance"_nm = cpp11::writable::doubles({hDistance}));
