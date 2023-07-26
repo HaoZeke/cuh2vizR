@@ -40,38 +40,27 @@ cuh2pot_df(const cpp11::data_frame &df) {
 }
 
 [[cpp11::register]] cpp11::writable::data_frame
-cuh2_pdat_df(const cpp11::writable::list &dfList) {
+cuh2_pdat_df(const cpp11::list &dfList) {
   // Create vectors to hold all the results
-  std::vector<double> energyVector;
-  std::vector<double> hh_distVector;
-  std::vector<double> hcu_distVector;
+  cpp11::writable::doubles energyVector;
+  cpp11::writable::doubles hh_distVector;
+  cpp11::writable::doubles hcu_distVector;
 
   // Loop over each data_frame in the list
   for (const auto &df : dfList) {
     // Compute the energy and distances for this data_frame
-    auto result = cuh2pot_df(cpp11::as_sexp(df));
+    auto ef_dat = cuh2pot_df(cpp11::as_sexp(df));
 
     // Add the results to the vectors
-    energyVector.push_back(cpp11::as_cpp<double>(result["energy"]));
-    hh_distVector.push_back(cpp11::as_cpp<double>(result["hDistance"]));
+    energyVector.push_back(cpp11::as_cpp<double>(ef_dat["energy"]));
+    hh_distVector.push_back(cpp11::as_cpp<double>(ef_dat["hDistance"]));
     hcu_distVector.push_back(
-        cpp11::as_cpp<double>(result["minCuDistance"]));
-  }
-
-  // Explicitly copy vectors into cpp11::writable::doubles
-  cpp11::writable::doubles energyDoubles(energyVector.size());
-  cpp11::writable::doubles hh_distDoubles(hh_distVector.size());
-  cpp11::writable::doubles hcu_distDoubles(hcu_distVector.size());
-
-  for (size_t i = 0; i < energyVector.size(); ++i) {
-    energyDoubles[i] = energyVector[i];
-    hh_distDoubles[i] = hh_distVector[i];
-    hcu_distDoubles[i] = hcu_distVector[i];
+        cpp11::as_cpp<double>(ef_dat["minCuDistance"]));
   }
 
   using namespace cpp11::literals;
-  cpp11::writable::data_frame result({"energy"_nm = energyDoubles,
-                                      "hh_dist"_nm = hh_distDoubles,
-                                      "hcu_dist"_nm = hcu_distDoubles});
+  cpp11::writable::data_frame result({"energy"_nm = energyVector,
+                                      "hh_dist"_nm = hh_distVector,
+                                      "hcu_dist"_nm = hcu_distVector});
   return result;
 }
