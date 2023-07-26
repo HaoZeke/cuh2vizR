@@ -16,4 +16,4 @@ const Eigen::Matrix3d DEFAULT_BOX{{15.345599999999999, 0, 0},
 
 std::pair<double, double> calculateDistances(rgpot::AtomMatrix &positions,
                                              Eigen::VectorXi &atmtypes);
-}
+} // namespace cuh2vizR::helpers
