@@ -1,6 +1,6 @@
 #include "helpers.hpp"
 
-[[cpp11::register]] writable::list cuh2pot_single_con(std::string fname) {
+[[cpp11::register]] cpp11::writable::list cuh2pot_single_con(std::string fname) {
   std::vector<std::string> fconts =
       yodecon::helpers::file::read_con_file(fname);
   auto singleCon = yodecon::create_single_con<ConFrameVec>(fconts);
@@ -44,6 +44,7 @@
   }
 
   // Return a named List with the energy and forces Matrix
+  using namespace cpp11::literals;
   cpp11::writable::list result;
   result.push_back("energy"_nm = cpp11::writable::doubles({energy}));
   result.push_back("forces"_nm = forces_matrix);
