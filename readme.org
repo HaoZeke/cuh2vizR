@@ -29,8 +29,10 @@ Rscript -e 'library(devtools); devtools::clean_dll(); cpp11::cpp_register(); dev
 library("cuh2vizR")
 library("readConR")
 dfCon<-readCon("test_data/cuh2.con")
-cuh2vizR_get_energy_df(dfCon)->df
-cuh2vizR_get_energy_contours(df)->gplt
+cuh2vizR_get_energy_df(dfCon)->dfx
+# Or
+# cuh2_scan_grid(dfCon$atom_data, hcu_dists =  seq(-0.05, 5, length.out=50), seq(0.3, 3, length.out=50))->dfx
+cuh2vizR_get_energy_contours(dfx)->gplt
 gplt %>% ggsave(filename = "plot_contours.png")
 #+end_src
 * Developing
