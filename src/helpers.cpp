@@ -1,23 +1,21 @@
 #include "helpers.hpp"
 
 namespace cuh2vizR::helpers {
-std::pair<double, double> calculateDistances(rgpot::AtomMatrix &positions,
-                                             Eigen::VectorXi &atmtypes) {
-  // Indices of Hydrogen atoms (Atomic number of Hydrogen is 1)
-  std::vector<size_t> hIndices;
-  // Positions of Copper atoms (Atomic number of Copper is 29)
-  std::vector<Eigen::VectorXd> cuPositions;
-
-  for (int i = 0; i < atmtypes.size(); ++i) {
-    if (atmtypes[i] == 1) {
+std::pair<double, double> calculateDistances(const rgpot::AtomMatrix &positions,
+                                             Eigen::VectorXi &atmNumVec) {
+  std::vector<int> hIndices, cuIndices;
+  for (int i = 0; i < atmNumVec.size(); ++i) {
+    if (atmNumVec[i] == 1) { // Hydrogen atom
       hIndices.push_back(i);
-    } else if (atmtypes[i] == 29) {
-      cuPositions.push_back(positions.row(i));
+    } else if (atmNumVec[i] == 29) { // Copper atom
+      cuIndices.push_back(i);
+    } else {
+      throw std::runtime_error("Unexpected atomic number");
     }
   }
 
   if (hIndices.size() != 2) {
-    throw std::runtime_error("Expected exactly 2 Hydrogen atoms.");
+    throw std::runtime_error("Expected exactly two hydrogen atoms");
   }
 
   // Calculate the distance between Hydrogen atoms
@@ -28,15 +26,14 @@ std::pair<double, double> calculateDistances(rgpot::AtomMatrix &positions,
   Eigen::VectorXd hMidpoint =
       (positions.row(hIndices[0]) + positions.row(hIndices[1])) / 2;
 
-  // Calculate the minimum distance from the midpoint of H2 to each Copper atom
-  double minCuDistance = std::numeric_limits<double>::max();
-  for (const auto &cuPos : cuPositions) {
-    double distance = (hMidpoint - cuPos).norm();
-    if (distance < minCuDistance) {
-      minCuDistance = distance;
-    }
+  // Find the z-coordinate of the topmost Cu layer
+  double maxCuZ = std::numeric_limits<double>::lowest();
+  for (int cuIndex : cuIndices) {
+    maxCuZ = std::max(maxCuZ, positions(cuIndex, 2));
   }
 
-  return std::make_pair(hDistance, minCuDistance);
+  double cuSlabDist = positions(hIndices[0], 2) - maxCuZ;
+
+  return std::make_pair(hDistance, cuSlabDist);
 }
 } // namespace cuh2vizR::helpers

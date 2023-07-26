@@ -17,7 +17,7 @@ const double CUH2_GLOBAL_MIN{-697.311695}; // 0 of the CuH2 system
 } // namespace constants
 namespace helpers {
 // Define box (assuming it's constant for now)
-std::pair<double, double> calculateDistances(rgpot::AtomMatrix &positions,
-                                             Eigen::VectorXi &atmtypes);
+std::pair<double, double> calculateDistances(const rgpot::AtomMatrix &positions,
+                                             Eigen::VectorXi &atmNumVec);
 } // namespace helpers
 } // namespace cuh2vizR
