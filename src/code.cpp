@@ -9,7 +9,10 @@ using namespace cpp11::literals;
 using namespace cpp11;
 using namespace yodecon::types;
 
-typedef Eigen::Matrix<unsigned long, Eigen::Dynamic, 1> VectorXul;
+// Define box (assuming it's constant for now)
+const Eigen::Matrix3d BOX{{15.345599999999999, 0, 0},
+                              {0, 21.702000000000002, 0},
+                              {0, 0, 100.00000000000000}};
 
 [[cpp11::register]] writable::list cuh2pot_single_con(std::string fname) {
   std::vector<std::string> fconts =
@@ -19,29 +22,31 @@ typedef Eigen::Matrix<unsigned long, Eigen::Dynamic, 1> VectorXul;
   // Populate atom positions matrix
   // Convert std::vectors to Eigen::VectorXd
   const size_t framesize = singleCon.x.size();
-  Eigen::VectorXd xVec = Eigen::Map<Eigen::VectorXd>(singleCon.x.data(), framesize);
-  Eigen::VectorXd yVec = Eigen::Map<Eigen::VectorXd>(singleCon.y.data(), framesize);
-  Eigen::VectorXd zVec = Eigen::Map<Eigen::VectorXd>(singleCon.z.data(), framesize);
-  auto atmtypes = Eigen::Map<VectorXul>(( yodecon::symbols_to_atomic_numbers(singleCon.symbol) ).data(), framesize);
+  Eigen::VectorXd xVec =
+      Eigen::Map<Eigen::VectorXd>(singleCon.x.data(), framesize);
+  Eigen::VectorXd yVec =
+      Eigen::Map<Eigen::VectorXd>(singleCon.y.data(), framesize);
+  Eigen::VectorXd zVec =
+      Eigen::Map<Eigen::VectorXd>(singleCon.z.data(), framesize);
+  std::vector<int> atmnums =
+      yodecon::symbols_to_atomic_numbers(singleCon.symbol);
+  // BUG: This shouldn't be necessary, and is a hacky fix
+  atmnums.erase(std::remove(atmnums.begin(), atmnums.end(), 0), atmnums.end());
+  Eigen::VectorXi atmtypes = Eigen::Map<VectorXi>((atmnums).data(), framesize);
 
   // Stack them into a matrix
-  rgpot::AtomMatrix positions(singleCon.x.size(), 3);
+  rgpot::AtomMatrix positions(framesize, 3);
   positions << xVec, yVec, zVec;
-
-  // Define box (assuming it's constant for now)
-  Eigen::Matrix3d box{{15.345599999999999, 0, 0},
-                      {0, 21.702000000000002, 0},
-                      {0, 0, 100.00000000000000}};
 
   // Compute the energy and forces
   auto cuh2pot = rgpot::CuH2Pot();
-  auto [energy, forces] = cuh2pot(positions, atmtypes.cast<int>(), box);
+  auto [energy, forces] = cuh2pot(positions, atmtypes, BOX);
 
   // Prepare forces output matrix
   cpp11::writable::doubles_matrix<cpp11::by_row> forces_matrix(forces.rows(),
                                                                3);
-  for (size_t idx {0}; idx < forces.rows(); ++idx) {
-    if (!singleCon.is_fixed[idx]){
+  for (size_t idx{0}; idx < forces.rows(); ++idx) {
+    if (!singleCon.is_fixed[idx]) {
       forces_matrix(idx, 0) = forces(idx, 0);
       forces_matrix(idx, 1) = forces(idx, 1);
       forces_matrix(idx, 2) = forces(idx, 2);
