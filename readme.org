@@ -24,6 +24,15 @@ We can use the following for ensuring everything goes well:
 #+begin_src bash
 Rscript -e 'library(devtools); devtools::clean_dll(); cpp11::cpp_register(); devtools::document(); devtools::install()'
 #+end_src
+*** Contours
+#+begin_src R
+library("cuh2vizR")
+library("readConR")
+dfCon<-readCon("test_data/cuh2.con")
+cuh2vizR_get_energy_df(dfCon)->df
+cuh2vizR_get_energy_contours(df)->gplt
+gplt %>% ggsave(filename = "plot_contours.png")
+#+end_src
 * Developing
 ** Reload
 #+begin_src R
