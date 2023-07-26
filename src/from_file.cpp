@@ -28,8 +28,8 @@ cuh2pot_single_con(std::string fname) {
   // Compute the energy and forces
   auto cuh2pot = rgpot::CuH2Pot();
   auto [energy, forces] =
-      cuh2pot(positions, atmtypes, cuh2vizR::helpers::DEFAULT_BOX);
-  energy -= -697.311695; // 0 of the CuH2 system
+      cuh2pot(positions, atmtypes, cuh2vizR::constants::DEFAULT_BOX);
+  energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
 
   // Prepare forces output matrix
   cpp11::writable::doubles_matrix<cpp11::by_row> forces_matrix(forces.rows(),
@@ -96,8 +96,8 @@ cuh2_pdat_con(std::string fname) {
 
     // Compute the energy and forces
     auto [energy, forces] =
-        cuh2pot(positions, atmtypes, cuh2vizR::helpers::DEFAULT_BOX);
-    energy -= -697.311695; // 0 of the CuH2 system
+        cuh2pot(positions, atmtypes, cuh2vizR::constants::DEFAULT_BOX);
+    energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
     energyVector.push_back(energy);
 
     auto [hDistance, minCuDistance] =

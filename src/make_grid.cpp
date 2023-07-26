@@ -95,8 +95,8 @@ void peturb_positions(rgpot::AtomMatrix &positions, Eigen::VectorXi &atmNumVec,
   peturb_positions(positions, atmNumVec, hcu_dist, hh_dist);
 
   auto [energy, forces] =
-      cuh2pot(positions, atmNumVec, cuh2vizR::helpers::DEFAULT_BOX);
-  energy -= -697.311695; // 0 of the CuH2 system
+      cuh2pot(positions, atmNumVec, cuh2vizR::constants::DEFAULT_BOX);
+      energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
 
   return energy;
 }
@@ -136,8 +136,8 @@ cuh2_scan_grid(const cpp11::data_frame &ref_df,
 
       // Compute the energy for this configuration
       auto [energy, forces] =
-          cuh2pot(positions, atmNumVec, cuh2vizR::helpers::DEFAULT_BOX);
-      energy -= -697.311695; // 0 of the CuH2 system
+          cuh2pot(positions, atmNumVec, cuh2vizR::constants::DEFAULT_BOX);
+      energy -= cuh2vizR::constants::CUH2_GLOBAL_MIN;
 
       // Store the results
       energyVector.push_back(energy);
