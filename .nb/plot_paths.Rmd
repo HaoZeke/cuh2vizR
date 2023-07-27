@@ -26,15 +26,15 @@ devtools::load_all()
 ```
 
 ```{r}
-dfCon<-readCon("../../../Theochem/EONgit//client//bbdir//reactant.con")
-cuh2_scan_grid(dfCon$atom_data, hcu_dists =  seq(-0.05, 5.2, length.out=60), seq(0.4, 3.3, length.out=60))->dfx
-cuh2vizR_get_energy_contours(dfx, clip_min = 0	)->gplt
+dfCon <- readCon("../../../Theochem/EONgit//client//bbdir//reactant.con")
+cuh2_scan_grid(dfCon$atom_data, hcu_dists = seq(-0.05, 5.2, length.out = 60), seq(0.4, 3.3, length.out = 60)) -> dfx
+cuh2vizR_get_energy_contours(dfx, clip_min = 0) -> gplt
 ```
 
 ```{r}
 "../../../Theochem/EONgit//client//bbdir//neb_path_000.con" %>% cuh2_pdat_con() -> nebframe
-gplt + 
-  geom_point(data = nebframe, aes(x = hh_dist, y = hcu_dist), color = "black")+
+gplt +
+  geom_point(data = nebframe, aes(x = hh_dist, y = hcu_dist), color = "black") +
   geom_line(data = nebframe, aes(x = hh_dist, y = hcu_dist), color = "black")
 ```
 
@@ -47,14 +47,13 @@ df_list <- lapply(file_paths, cuh2_pdat_con)
 
 # Add an 'iteration' column to each data frame
 for (i in seq_along(df_list)) {
-  df_list[[i]] <- df_list[[i]] %>% 
+  df_list[[i]] <- df_list[[i]] %>%
     mutate(iteration = i)
 }
-
 ```
 
 ```{r}
-p <- ggplot(df_list %>% bind_rows() , aes(x = hh_dist, y = hcu_dist)) +
+p <- ggplot(df_list %>% bind_rows(), aes(x = hh_dist, y = hcu_dist)) +
   geom_point(color = "black") +
   geom_line(color = "black") +
   transition_manual(iteration) +
@@ -66,15 +65,17 @@ animate(p)
 
 ```{r}
 # Generate list of file paths
-file_paths <- sprintf("../../../Theochem/EONgit//client//bbdir//neb_path_%03d.con",
-                      0:70)
+file_paths <- sprintf(
+  "../../../Theochem/EONgit//client//bbdir//neb_path_%03d.con",
+  0:70
+)
 
 # Use lapply to create a list of data frames
 df_list <- lapply(file_paths, cuh2_pdat_con)
 
 # Add an 'iteration' column to each data frame
 for (i in seq_along(df_list)) {
-  df_list[[i]] <- df_list[[i]] %>% 
+  df_list[[i]] <- df_list[[i]] %>%
     mutate(iteration = i)
 }
 ```
@@ -87,7 +88,7 @@ dfx <- dfx %>%
 
 # Define the ggplot
 p <- ggplot(dfx, aes(x = hh_dist, y = hcu_dist, z = energy)) +
-  geom_raster(interpolate = T, aes(fill = energy)) + 
+  geom_raster(interpolate = T, aes(fill = energy)) +
   geom_contour(color = "white") +
   scale_fill_gradientn(colors = hcl.colors(10, palette = "Blue-Red")) +
   geom_point(data = df_list %>% bind_rows(), aes(x = hh_dist, y = hcu_dist), color = "black") +
@@ -96,40 +97,43 @@ p <- ggplot(dfx, aes(x = hh_dist, y = hcu_dist, z = energy)) +
   labs(title = "Iteration: {current_frame}", x = "H-H distance", y = "Cu-H2 distance")
 
 # Generate the animation
-animate(p, 
-        renderer = gifski_renderer(file = "neb_cuh2.gif"),
-        duration = 10, 
-        fps = 60, res=150,
-        #height = 2, width = 3, units = "in",
-        width = 800, height = 800
-       )
+animate(p,
+  renderer = gifski_renderer(file = "neb_cuh2.gif"),
+  duration = 10,
+  fps = 60, res = 150,
+  # height = 2, width = 3, units = "in",
+  width = 800, height = 800
+)
 # To disk
-#gganimate::anim_save("neb_cuh2.gif", p)
+# gganimate::anim_save("neb_cuh2.gif", p)
 ```
 
 ```{r}
- clip_max = 5
- clip_min = 0
-dfx %>% mutate(energy = replace(energy, energy > clip_max, clip_max)) %>%
-    mutate(energy = replace(energy, energy < clip_min, clip_min)) %>%
-    ggplot(aes(x = hh_dist, y = hcu_dist, z = energy)) +
-    ## Can also be geom_tile()
-    geom_raster(interpolate = T, aes(fill = energy)) +
-    geom_contour(color = "white") +
-    scale_fill_gradientn(colors = hcl.colors(10, palette = "Blue-Red")) +
-    labs(x = "H-H distance",
-         y = "Cu-H2 distance")# +
-  #geom_point(data = nebframe, aes(x = hh_dist, y = hcu_dist), color = "black") 
-
+clip_max <- 5
+clip_min <- 0
+dfx %>%
+  mutate(energy = replace(energy, energy > clip_max, clip_max)) %>%
+  mutate(energy = replace(energy, energy < clip_min, clip_min)) %>%
+  ggplot(aes(x = hh_dist, y = hcu_dist, z = energy)) +
+  ## Can also be geom_tile()
+  geom_raster(interpolate = T, aes(fill = energy)) +
+  geom_contour(color = "white") +
+  scale_fill_gradientn(colors = hcl.colors(10, palette = "Blue-Red")) +
+  labs(
+    x = "H-H distance",
+    y = "Cu-H2 distance"
+  ) # +
+# geom_point(data = nebframe, aes(x = hh_dist, y = hcu_dist), color = "black")
 ```
 
 ```{r}
-cuh2_scan_grid(dfCon$atom_data, hcu_dists =  seq(-0.05, 5.1, length.out=60), seq(0.4, 3.2, length.out=60))->dfxx
+cuh2_scan_grid(dfCon$atom_data, hcu_dists = seq(-0.05, 5.1, length.out = 60), seq(0.4, 3.2, length.out = 60)) -> dfxx
 ```
 
 ```{r}
 dfxx %>%
-  arrange(energy) %>% filter(hh_dist > 2) %>%
+  arrange(energy) %>%
+  filter(hh_dist > 2) %>%
   slice_head(n = 5)
 ```
 

@@ -25,8 +25,8 @@ NULL
 #' cuh2vizR_get_energy_df(df, hcu_dists = seq(-0.05, 5, length.out = 60), hh_dists = seq(0.4, 3, length.out = 60))
 #' }
 cuh2vizR_get_energy_df <- function(a_df,
-                                   hcu_dists = seq(-0.05, 5, length.out = 60),
-                                   hh_dists = seq(0.4, 3, length.out = 60)) {
+                                   hcu_dists = seq(-0.05, 5.1, length.out = 60),
+                                   hh_dists = seq(0.4, 3.2, length.out = 60)) {
   ## Initialize vectors to store the results
   energies <- vector("double", length(hcu_dists) * length(hh_dists))
   hcu_dists_vec <- vector("double", length(hcu_dists) * length(hh_dists))
@@ -37,8 +37,8 @@ cuh2vizR_get_energy_df <- function(a_df,
   for (hcu_dist in hcu_dists) {
     for (hh_dist in hh_dists) {
       energies[counter] <- get_energy(a_dfCon$atom_data,
-                                      hcu_dist = hcu_dist,
-                                      hh_dist = hh_dist
+        hcu_dist = hcu_dist,
+        hh_dist = hh_dist
       )
       hcu_dists_vec[counter] <- hcu_dist
       hh_dists_vec[counter] <- hh_dist
