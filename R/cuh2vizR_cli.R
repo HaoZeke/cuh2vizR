@@ -14,7 +14,7 @@
 #' @param ground The path to the file containing the base system configuration (ground state). [required]
 #' @param pattern The file pattern to match in the directory. Default is "neb_path_%03d.con".
 #' @param rangeidx A comma-separated string specifying the range of file indices to include. Example: "0,10". Default is "0,10".
-#' @param filename The filename for the output animation. Default is "neb_cuh2.gif".
+#' @param filename The filename for the output animation, without the file type. Default is "neb_cuh2".
 #' @param clip_max The maximum energy of the contour plot. Default is 5.
 #' @param clip_min The minimum energy of the contour plot. Default is 0.
 #' @param width The width of the output animation in pixels. Default is 800.
@@ -47,7 +47,7 @@ cuh2vizR_cli <- function() {
       help = "Range of file indices to include (comma-separated)", metavar = "character"
     ),
     optparse::make_option(c("-f", "--filename"),
-      type = "character", default = "neb_cuh2.gif",
+      type = "character", default = "neb_cuh2",
       help = "Filename for the output animation", metavar = "character"
     ),
     optparse::make_option("--clip_max",
