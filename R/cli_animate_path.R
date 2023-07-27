@@ -116,6 +116,7 @@ animate_path <- function() {
 
 
   # Generate list of file paths
+  cli::cli_alert_info("Looking for files based on pattern: {(opt$pattern)}")
   file_paths <- sprintf(
     file.path(opt$dir, opt$pattern),
     rangeidx[1]:rangeidx[2]
@@ -132,6 +133,10 @@ animate_path <- function() {
 
   # Add an 'iteration' column to each data frame
   df_list <- lapply(seq_along(file_paths), function(i) {
+    if (!file.exists(file_paths[i])) {
+      cli::cli_alert_warning(paste0("File does not exist: ", file_paths[i], " range indices will be incorrect."))
+      return(NULL)
+    }
     pb$tick(tokens = list(filename = file_paths[i]))
     df <- cuh2vizR::cuh2_pdat_con(file_paths[i])
     df %>%
