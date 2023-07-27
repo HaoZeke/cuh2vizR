@@ -13,14 +13,18 @@
 #' @param dir The directory path where the files are stored. [required]
 #' @param ground The path to the file containing the base system configuration (ground state). [required]
 #' @param pattern The file pattern to match in the directory. Default is "neb_path_%03d.con".
-#' @param range The range of file indices to include. Default is c(0, 10).
+#' @param rangeidx A comma-separated string specifying the range of file indices to include. Example: "0,10". Default is "0,10".
 #' @param filename The filename for the output animation. Default is "neb_cuh2.gif".
+#' @param clip_max The maximum energy of the contour plot. Default is 5.
+#' @param clip_min The minimum energy of the contour plot. Default is 0.
 #' @param width The width of the output animation in pixels. Default is 800.
 #' @param height The height of the output animation in pixels. Default is 800.
 #' @param fps The frames per second for the output animation. Default is 60.
 #' @param res The resolution for the output animation. Default is 150.
 #' @param duration The duration of the output animation in seconds. Default is 10.
-#' @return NULL
+#' @param hh_range A comma-separated string specifying the range for H-H distances. Example: "0.4,3.2". Default is "0.4,3.2".
+#' @param hcu_range A comma-separated string specifying the range for H-Cu distances. Example: "-0.05,5.1". Default is "-0.05,5.1".
+#' @return Prints the success message and saves the generated animation to the specified file.
 #' @export
 #' @examples
 #' cuh2vizR_cli(dir = "/path/to/files", ground = "/path/to/ground_file.con")
@@ -36,15 +40,23 @@ cuh2vizR_cli <- function() {
     ),
     optparse::make_option(c("-p", "--pattern"),
       type = "character", default = "neb_path_%03d.con",
-      help = "File pattern to match in the directory", metavar = "character"
+      help = "File pattern to match in the directory (e.g. neb_path_%03d.con)", metavar = "character"
     ),
-    optparse::make_option(c("-r", "--range"),
-      type = "integer", default = c(0, 10),
-      help = "Range of file indices to include", metavar = "integer"
+    optparse::make_option(c("-r", "--rangeidx"),
+      type = "character", default = "0,10",
+      help = "Range of file indices to include (comma-separated)", metavar = "character"
     ),
     optparse::make_option(c("-f", "--filename"),
       type = "character", default = "neb_cuh2.gif",
       help = "Filename for the output animation", metavar = "character"
+    ),
+    optparse::make_option("--clip_max",
+      type = "numeric", default = 5,
+      help = "Maximum energy of the contour plot", metavar = "numeric"
+    ),
+    optparse::make_option("--clip_min",
+      type = "numeric", default = 0,
+      help = "Minimum energy of the contour plot", metavar = "numeric"
     ),
     optparse::make_option("--width",
       type = "integer", default = 800,
@@ -65,6 +77,18 @@ cuh2vizR_cli <- function() {
     optparse::make_option("--duration",
       type = "integer", default = 10,
       help = "Duration of the output animation", metavar = "integer"
+    ),
+    optparse::make_option("--hh_range",
+      type = "character", default = "0.4,3.2",
+      help = "Range for H-H distances (comma separated)", metavar = "character"
+    ),
+    optparse::make_option("--hcu_range",
+      type = "character", default = "-0.05,5.1",
+      help = "Range for H-Cu distances (comma separated)", metavar = "character"
+    ),
+    optparse::make_option("--num_points",
+      type = "integer", default = 60,
+      help = "Number of points for the scan grid", metavar = "integer"
     )
   )
 
@@ -74,44 +98,68 @@ cuh2vizR_cli <- function() {
   # Check that the directory was provided
   if (is.null(opt$dir)) {
     stop("You must provide a directory path.")
+  } else {
+    cli::cli_text("Directory path: {opt$dir}")
   }
 
-  # Check that an initial configuration was provided This is used to generate
-  # the energy surface, it may be reactant, product, or any configuration
+  # Check that an initial configuration was provided
   if (is.null(opt$ground)) {
     stop("You must provide an initial system.")
+  } else {
+    cli::cli_text("Ground state configuration: {opt$ground}")
   }
+
+# Convert character ranges to numeric vectors
+rangeidx <- as.numeric(strsplit(opt$rangeidx, ",")[[1]])
+hh_range <- as.numeric(strsplit(opt$hh_range, ",")[[1]])
+hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
+
 
   # Generate list of file paths
   file_paths <- sprintf(
     file.path(opt$dir, opt$pattern),
-    opt$range[1]:opt$range[2]
+    rangeidx[1]:rangeidx[2]
   )
 
+  cli::cat_rule("Processing Files")
+
   # Use lapply to create a list of data frames
-  df_list <- lapply(file_paths, cuh2vizR::cuh2_pdat_con)
+  pb <- progress::progress_bar$new(
+    format = "[:bar] :percent  Processing :filename",
+    total = length(file_paths)
+  )
 
   # Add an 'iteration' column to each data frame
-  for (i in seq_along(df_list)) {
-    df_list[[i]] <- df_list[[i]] %>%
+  df_list <- lapply(seq_along(file_paths), function(i) {
+    pb$tick(tokens = list(filename = file_paths[i]))
+    df <- cuh2vizR::cuh2_pdat_con(file_paths[i])
+    df %>%
       dplyr::mutate(iteration = i)
-  }
+  })
 
+
+  cli::cat_rule("Generating Animation")
 
   dfCon <- readConR::readCon(opt$ground)
-  cuh2_scan_grid(dfCon$atom_data, hcu_dists = seq(-0.05, 5.2, length.out = 60), seq(0.4, 3.3, length.out = 60)) -> dfx
+  cuh2_scan_grid(dfCon$atom_data, hcu_dists = seq(hcu_range[1],
+                                                  hcu_range[2],
+                                                  length.out = opt$num_points),
+                 hh_dists = seq(hh_range[1],
+                                 hh_range[2],
+                                 length.out = opt$num_points)) -> dfx
 
   # Generate the animation
   cuh2vizR::cuh2vizR_generate_animation(
     dfx,
     df_list,
-    clip_max = 5,
-    clip_min = 0,
+    clip_max = opt$clip_max,
+    clip_min = opt$clip_min,
     filename = opt$filename,
     duration = opt$duration,
     fps = opt$fps,
     width = opt$width,
     height = opt$height,
-    res = opt$res,
+    res = opt$res
   )
+  cli::cli_text("Animation generated and saved as: {opt$filename}")
 }

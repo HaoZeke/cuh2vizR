@@ -21,4 +21,5 @@ Imports:
     gganimate,
     ggplot2,
     magrittr,
-    optparse
+    optparse,
+    progress
