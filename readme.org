@@ -24,6 +24,11 @@ We can use the following for ensuring everything goes well:
 #+begin_src bash
 Rscript -e 'library(devtools); devtools::clean_dll(); cpp11::cpp_register(); devtools::document(); devtools::install()'
 #+end_src
+*** CLI
+For the most common use case of creating a path animation there is a helpful CLI:
+#+begin_src bash
+Rscript -e "cuh2vizR::cuh2vizR_cli()" --dir "../../Theochem/EONgit/client/bbdir" --ground "test_data/cuh2.con"
+#+end_src
 *** Contours
 #+begin_src R
 library("cuh2vizR")

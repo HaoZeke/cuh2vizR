@@ -13,11 +13,12 @@
 #' @param dir The directory path where the files are stored. [required]
 #' @param ground The path to the file containing the base system configuration (ground state). [required]
 #' @param pattern The file pattern to match in the directory. Default is "neb_path_%03d.con".
-#' @param range The range of file indices to include. Default is c(0, 70).
+#' @param range The range of file indices to include. Default is c(0, 10).
 #' @param filename The filename for the output animation. Default is "neb_cuh2.gif".
 #' @param width The width of the output animation in pixels. Default is 800.
 #' @param height The height of the output animation in pixels. Default is 800.
 #' @param fps The frames per second for the output animation. Default is 60.
+#' @param res The resolution for the output animation. Default is 150.
 #' @param duration The duration of the output animation in seconds. Default is 10.
 #' @return NULL
 #' @export
@@ -38,7 +39,7 @@ cuh2vizR_cli <- function() {
       help = "File pattern to match in the directory", metavar = "character"
     ),
     optparse::make_option(c("-r", "--range"),
-      type = "integer", default = c(0, 70),
+      type = "integer", default = c(0, 10),
       help = "Range of file indices to include", metavar = "integer"
     ),
     optparse::make_option(c("-f", "--filename"),
@@ -56,6 +57,10 @@ cuh2vizR_cli <- function() {
     optparse::make_option("--fps",
       type = "integer", default = 60,
       help = "Frames per second for the output animation", metavar = "integer"
+    ),
+    optparse::make_option("--res",
+      type = "integer", default = 150,
+      help = "Resolution of the output animation", metavar = "integer"
     ),
     optparse::make_option("--duration",
       type = "integer", default = 10,
@@ -106,6 +111,7 @@ cuh2vizR_cli <- function() {
     duration = opt$duration,
     fps = opt$fps,
     width = opt$width,
-    height = opt$height
+    height = opt$height,
+    res = opt$res,
   )
 }
