@@ -32,15 +32,20 @@ dependencies:
   - r-cpp11
   # (test)
   - r-testthat
+  - r-assertthat
+  # (cli)
+  - r-optparse
+  - r-cli
   # (lint)
   - r-styler
   - r-lintr
+  # (animation)
+  - r-gifski
+  - ffmpeg
   # (extra)
   - r-microbenchmark
   - r-foreach
   - r-doParallel
-  - r-gifski
-  - ffmpeg
   # Interactivity
   - radian
   - r-irkernel

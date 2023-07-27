@@ -16,6 +16,9 @@ SystemRequirements: C++17
 LinkingTo:
     cpp11
 Imports: 
+    assertthat,
+    cli,
     gganimate,
     ggplot2,
-    magrittr
+    magrittr,
+    optparse
