@@ -35,5 +35,14 @@ dependencies:
   # (lint)
   - r-styler
   - r-lintr
+  # (extra)
+  - r-microbenchmark
+  - r-foreach
+  - r-doParallel
+  - r-gifski
+  - ffmpeg
   # Interactivity
   - radian
+  - r-irkernel
+  - jupyter
+  - r-rmarkdown
