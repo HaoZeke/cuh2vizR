@@ -29,6 +29,13 @@ For the most common use case of creating a path animation there is a helpful CLI
 #+begin_src bash
 Rscript -e "cuh2vizR::cuh2vizR_cli()" --dir "../../Theochem/EONgit/client/bbdir" --ground "test_data/cuh2.con"
 #+end_src
+Or even more generically:
+#+begin_src bash
+micromamba run -n cuh2vizR_dev Rscript -e "cuh2vizR::cuh2vizR_cli()" \
+    --dir "$(pwd)" \
+    --ground "$(pwd)/reactant.con" \
+    --rangeidx "0,70"
+#+end_src
 *** Contours
 #+begin_src R
 library("cuh2vizR")
