@@ -20,6 +20,8 @@ Imports:
     cli,
     gganimate,
     ggplot2,
+    glue,
     magrittr,
     optparse,
-    progress
+    progress,
+    readConR
