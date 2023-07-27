@@ -58,11 +58,14 @@ cuh2vizR_get_energy_contours <- function(a_df, clip_max = 5, clip_min = 0) {
 #'   res = 150
 #' )
 #' }
-cuh2vizR_generate_animation <- function(dfx, df_list, clip_max = 5, clip_min = 0, filename = "neb_cuh2.gif", duration = 10, fps = 60, width = 800, height = 800, res = 150) {
+cuh2vizR_generate_animation <- function(dfx, df_list, clip_max = 5, clip_min = 0, filename = "neb_cuh2", startrange = 0, duration = 10, fps = 60, width = 800, height = 800, res = 150) {
   # Adjust the energy values
   dfx <- dfx %>%
     dplyr::mutate(energy = replace(energy, energy > clip_max, clip_max)) %>%
     dplyr::mutate(energy = replace(energy, energy < clip_min, clip_min))
+
+  # Calculate final frame value
+  final_frame <- startrange + length(df_list)
 
   # Define the ggplot
   p <- ggplot2::ggplot(dfx, ggplot2::aes(x = hh_dist, y = hcu_dist, z = energy)) +
@@ -72,10 +75,18 @@ cuh2vizR_generate_animation <- function(dfx, df_list, clip_max = 5, clip_min = 0
     ggplot2::geom_point(data = df_list %>% dplyr::bind_rows(), ggplot2::aes(x = hh_dist, y = hcu_dist), color = "black") +
     ggplot2::geom_line(data = df_list %>% dplyr::bind_rows(), ggplot2::aes(x = hh_dist, y = hcu_dist), color = "black") +
     gganimate::transition_manual(iteration) +
-    ggplot2::labs(title = "Iteration: {current_frame}", x = "H-H distance", y = "Cu-H2 distance")
+    ggplot2::labs(
+      title = "Iteration: {current_frame}",
+      subtitle = paste("Range:", startrange, "to", final_frame),
+      x = "H-H distance",
+      y = "Cu-H2 distance"
+    )
+
+  # Create a file name with startrange and final frame value
+  final_filename <- paste(filename, "_", startrange, "_", final_frame, ".gif", sep = "")
 
   # Generate the animation with the provided options
-  gganimate::animate(p, renderer = gganimate::gifski_renderer(file = filename), duration = duration, fps = fps, width = width, height = height, res = res)
+  gganimate::animate(p, renderer = gganimate::gifski_renderer(file = final_filename), duration = duration, fps = fps, width = width, height = height, res = res)
 
-  return(NULL)
+  return(final_filename)
 }
