@@ -99,20 +99,20 @@ cuh2vizR_cli <- function() {
   if (is.null(opt$dir)) {
     stop("You must provide a directory path.")
   } else {
-    cli::cli_text("Directory path: {opt$dir}")
+    cli::cli_alert_success("Directory path: {opt$dir}")
   }
 
   # Check that an initial configuration was provided
   if (is.null(opt$ground)) {
     stop("You must provide an initial system.")
   } else {
-    cli::cli_text("Ground state configuration: {opt$ground}")
+    cli::cli_alert_success("Ground state configuration: {opt$ground}")
   }
 
-# Convert character ranges to numeric vectors
-rangeidx <- as.numeric(strsplit(opt$rangeidx, ",")[[1]])
-hh_range <- as.numeric(strsplit(opt$hh_range, ",")[[1]])
-hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
+  # Convert character ranges to numeric vectors
+  rangeidx <- as.numeric(strsplit(opt$rangeidx, ",")[[1]])
+  hh_range <- as.numeric(strsplit(opt$hh_range, ",")[[1]])
+  hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
 
 
   # Generate list of file paths
@@ -121,7 +121,7 @@ hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
     rangeidx[1]:rangeidx[2]
   )
 
-  cli::cat_rule("Processing Files")
+  cli::cli_alert_info("Processing Files")
 
   # Use lapply to create a list of data frames
   pb <- progress::progress_bar$new(
@@ -138,15 +138,19 @@ hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
   })
 
 
-  cli::cat_rule("Generating Animation")
+  cli::cli_alert_info("Generating Animation")
 
   dfCon <- readConR::readCon(opt$ground)
-  cuh2_scan_grid(dfCon$atom_data, hcu_dists = seq(hcu_range[1],
-                                                  hcu_range[2],
-                                                  length.out = opt$num_points),
-                 hh_dists = seq(hh_range[1],
-                                 hh_range[2],
-                                 length.out = opt$num_points)) -> dfx
+  cuh2_scan_grid(dfCon$atom_data,
+    hcu_dists = seq(hcu_range[1],
+      hcu_range[2],
+      length.out = opt$num_points
+    ),
+    hh_dists = seq(hh_range[1],
+      hh_range[2],
+      length.out = opt$num_points
+    )
+  ) -> dfx
 
   # Generate the animation
   cuh2vizR::cuh2vizR_generate_animation(
@@ -161,6 +165,7 @@ hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
     width = opt$width,
     height = opt$height,
     res = opt$res
-  )->final_filename
-  cli::cli_text("Animation generated and saved as: {final_filename}")
+  ) -> final_filename
+
+  cli::cli_alert_success("Animation generated and saved as: {final_filename}")
 }
