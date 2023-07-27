@@ -15,7 +15,7 @@ Config/testthat/edition: 3
 SystemRequirements: C++17
 LinkingTo:
     cpp11
-Imports: 
+Imports:
     assertthat,
     cli,
     gganimate,
