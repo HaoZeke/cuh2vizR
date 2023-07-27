@@ -152,6 +152,7 @@ hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
   cuh2vizR::cuh2vizR_generate_animation(
     dfx,
     df_list,
+    startrange = rangeidx[1],
     clip_max = opt$clip_max,
     clip_min = opt$clip_min,
     filename = opt$filename,
@@ -160,6 +161,6 @@ hcu_range <- as.numeric(strsplit(opt$hcu_range, ",")[[1]])
     width = opt$width,
     height = opt$height,
     res = opt$res
-  )
-  cli::cli_text("Animation generated and saved as: {opt$filename}")
+  )->final_filename
+  cli::cli_text("Animation generated and saved as: {final_filename}")
 }
