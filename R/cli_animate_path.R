@@ -1,12 +1,12 @@
 #' CuH2 visualization CLI
 #'
-#' This function provides a command-line interface for the CuH2 visualization
+#' This function provides a command-line interface for the CuH2 animation
 #' tools. It requires a directory path and a ground state configuration file.
 #' Additionally, it accepts optional arguments for file pattern, range of file
 #' indices to include, and animation parameters.
 #'
 #' The "ground state configuration" refers to a configuration file that describes
-#' the initial state of the system, typically a reactant or product configuration.
+#' any state of the system, typically a reactant or product configuration.
 #' This configuration is used as a base for generating the energy surface that
 #' guides the animation.
 #'
@@ -27,8 +27,8 @@
 #' @return Prints the success message and saves the generated animation to the specified file.
 #' @export
 #' @examples
-#' cuh2vizR_cli(dir = "/path/to/files", ground = "/path/to/ground_file.con")
-cuh2vizR_cli <- function() {
+#' animate_path(dir = "/path/to/files", ground = "/path/to/ground_file.con")
+animate_path <- function() {
   option_list <- list(
     optparse::make_option(c("-d", "--dir"),
       type = "character", default = NULL,
@@ -122,6 +122,7 @@ cuh2vizR_cli <- function() {
   )
 
   cli::cli_alert_info("Processing Files")
+  # TODO: Refactor into function
 
   # Use lapply to create a list of data frames
   pb <- progress::progress_bar$new(
@@ -139,6 +140,7 @@ cuh2vizR_cli <- function() {
 
 
   cli::cli_alert_info("Generating Animation")
+  # TODO: Refactor into function
 
   dfCon <- readConR::readCon(opt$ground)
   cuh2_scan_grid(dfCon$atom_data,
