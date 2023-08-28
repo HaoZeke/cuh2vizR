@@ -7,11 +7,11 @@ return dataframes from files without an intermediate stage in ~R~.
 - We return "free atom" forces only, that is we explicitly zero out the forces
   of atoms which are marked as unmoving in the ~con~ file
 ** Usage
-At the moment, the easiest / most robust way to use this is with the bundled
-environment.
+At the moment, the easiest / most robust way to use this is with the ~pixi~ environment and ~renv~.
 #+begin_src bash
-micromamba create -f environment.yml
-micromamba activate cuh2vizR_dev
+export PKG_CONFIG_PATH=$CONDA_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+pixi shell
+Rscript -e 'renv::restore()'
 #+end_src
 *** Prerequisites
 We need the ~readConR~ package, so:
