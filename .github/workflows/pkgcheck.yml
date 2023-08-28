@@ -1,11 +1,19 @@
+name: Build and Test
 on:
   push:
-    branches: [main, master, v2-branch]
+    branches:
+      - main
   pull_request:
-    branches: [main, master, v2-branch]
+    branches:
+      - main
 
-name: ROpenSci-pkgcheck
+jobs:
+  pkgcheck:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+          fetch-depth: 0
       - name: pkgcheck
         uses: ropensci-review-tools/pkgcheck-action@v1.0.0
