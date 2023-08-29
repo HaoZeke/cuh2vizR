@@ -13,6 +13,13 @@ export PKG_CONFIG_PATH=$CONDA_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
 pixi shell
 Rscript -e 'renv::restore()'
 #+end_src
+Or ~micromamba~:
+#+begin_src bash
+micromamba create -f environment.yml
+micromamba activate cuh2vizR_dev
+export PKG_CONFIG_PATH=$CONDA_PREFIX/share/pkgconfig:$PKG_CONFIG_PATH
+Rscript -e 'renv::restore()'
+#+end_src
 *** Prerequisites
 We need the ~readConR~ package, so:
 #+begin_src bash
